@@ -4,7 +4,7 @@ from cStringIO import StringIO
 
 from flask import Flask
 from flask_cors import CORS
-
+from flask_httpauth import HTTPBasicAuth
 
 class WSGIRawBody(object):
     def __init__(self, application):
@@ -35,6 +35,18 @@ class WSGIRawBody(object):
 
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
+
+users = {
+    os.environ.get('USER'):os.environ.get('PASS')
+}
+
+@auth.get_password
+def get_pw(id):
+    if id in id_list:
+        return id_list.get(id)
+    return None
+
 
 if os.environ.get('ENABLE_CORS', config.ENABLE_CORS):
     cors = CORS(app, resources={r"*": {"origins": os.environ.get('CORS_ORIGINS', config.CORS_ORIGINS)}})
@@ -81,4 +93,5 @@ app.add_url_rule('/api/v1/stats', 'api.stats')
 
 # app.add_url_rule('/robots.txt', redirect_to=url_for('static', filename='robots.txt'))
 
+@auth.login_required
 from requestbin import api, views
