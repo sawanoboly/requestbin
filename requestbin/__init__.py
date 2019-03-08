@@ -42,9 +42,9 @@ users = {
 }
 
 @auth.get_password
-def get_pw(id):
-    if id in id_list:
-        return id_list.get(id)
+def get_pw(username):
+    if username in users:
+        return users.get(username)
     return None
 
 @app.before_request
