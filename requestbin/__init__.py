@@ -47,6 +47,10 @@ def get_pw(id):
         return id_list.get(id)
     return None
 
+@app.before_request
+@auth.login_required
+def before_request():
+    pass
 
 if os.environ.get('ENABLE_CORS', config.ENABLE_CORS):
     cors = CORS(app, resources={r"*": {"origins": os.environ.get('CORS_ORIGINS', config.CORS_ORIGINS)}})
@@ -93,5 +97,4 @@ app.add_url_rule('/api/v1/stats', 'api.stats')
 
 # app.add_url_rule('/robots.txt', redirect_to=url_for('static', filename='robots.txt'))
 
-@auth.login_required
 from requestbin import api, views
